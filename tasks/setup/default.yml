@@ -1,7 +1,38 @@
 ---
-- name: Failover if no platform specific tasks are found
-  ansible.builtin.fail:
-    msg: "Your platform is not supported"
-  when: true
+- name: Download rustup
+  ansible.builtin.get_url:
+    url: https://sh.rustup.rs
+    dest: /tmp/rustup-init.sh
+    mode: "0755"
+
+- name: Install rustup
+  become: "{% if rust_rustup_user != '' %}true{% else %}false{% endif %}"
+  become_user: "{{ rust_rustup_user | default(omit) }}"
+  ansible.builtin.command: /tmp/rustup-init.sh -y
+  args:
+    creates: ~/.cargo/bin/rustup
+
+- name: Install rust toolchain
+  become: "{% if rust_rustup_user != '' %}true{% else %}false{% endif %}"
+  become_user: "{{ rust_rustup_user | default(omit) }}"
+  ansible.builtin.command: ~/.cargo/bin/rustup toolchain install {{ item }}
+  args:
+    creates: ~/.rustup/toolchains/{{ item }}-x86_64-unknown-linux-gnu
+  loop: "{{ rust_rustup_toolchains }}"
+
+- name: Update toolchains
+  become: "{% if rust_rustup_user != '' %}true{% else %}false{% endif %}"
+  become_user: "{{ rust_rustup_user | default(omit) }}"
+  ansible.builtin.command: ~/.cargo/bin/rustup update
+  register: rustup_update
+  changed_when: '"installed" in rustup_update.stdout or "updated" in rustup_update.stdout'
+  loop: "{{ rust_rustup_toolchains }}"
+
+- name: Set default toolchain
+  become: "{% if rust_rustup_user != '' %}true{% else %}false{% endif %}"
+  become_user: "{{ rust_rustup_user | default(omit) }}"
+  ansible.builtin.command: ~/.cargo/bin/rustup default {{ rust_rustup_default_toolchain }}
+  args:
+    creates: ~/.rustup/toolchains/{{ rust_rustup_default_toolchain }}-x86_64-unknown-linux-gnu
 
 ...

@@ -1,0 +1,13 @@
+---
+- name: Use rustup
+  ansible.builtin.include_tasks: setup/default.yml
+  when: rust_use_rustup
+
+- name: Install packages
+  become: true
+  ansible.builtin.apt:
+    name: "{{ rust_packages }}"
+    state: present
+  when: not rust_use_rustup
+
+...
