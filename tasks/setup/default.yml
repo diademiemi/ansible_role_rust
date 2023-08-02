@@ -1,4 +1,11 @@
 ---
+- name: Ensure wget is installed
+  become: true
+  ansible.builtin.package:
+    name: wget
+    state: present
+  when: rust_rustup_ensure_wget
+
 - name: Download rustup
   ansible.builtin.get_url:
     url: https://sh.rustup.rs

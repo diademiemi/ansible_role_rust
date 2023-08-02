@@ -30,7 +30,8 @@ Role Variables
 
 Variable | Default | Description
 --- | --- | ---
-`rust_use_rustup` | `true` | Whether to use rustup to install Rust
+`rust_use_rustup` | `true` | Whether to use rustup to install Rust\
+`rust_rustup_ensure_wget` | `true` | Whether to try to install wget if it is not installed. Requires a become password.
 `rust_rustup_toolchains` | `["stable"]` | List of rustup toolchains to install
 `rust_rustup_default_toolchain` | `{{ rust_rustup_toolchains[0] }}` | The default rustup toolchain
 `rust_rustup_update` | `false` | Whether to update toolchains after installation

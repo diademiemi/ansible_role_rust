@@ -1,5 +1,6 @@
 ---
 rust_use_rustup: true
+rust_rustup_ensure_wget: true
 rust_rustup_toolchains:
   - "stable"
 rust_rustup_default_toolchain: "{{ rust_rustup_toolchains[0] }}"
