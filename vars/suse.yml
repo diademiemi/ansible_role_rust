@@ -1,6 +1,6 @@
 ---
 _rust_packages:
-  - rustc
+  - rust
   - cargo
 
 ...
